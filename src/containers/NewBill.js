@@ -19,6 +19,14 @@ export default class NewBill {
     e.preventDefault()
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g)
+    // bug hunt bills
+    const regexExtensions = /(\.jpg|\.jpeg|\.png)$/i
+    if (!regexExtensions.exec(filePath)) {
+        alert('Invalid file type');
+        fileInput.value = '';
+        return false;
+    }
+    // fin de bug hunt bills
     const fileName = filePath[filePath.length-1]
     const formData = new FormData()
     const email = JSON.parse(localStorage.getItem("user")).email

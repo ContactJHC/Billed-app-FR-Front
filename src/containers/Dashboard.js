@@ -72,9 +72,21 @@ export default class {
     this.document = document
     this.onNavigate = onNavigate
     this.store = store
-    $('#arrow-icon1').click((e) => this.handleShowTickets(e, bills, 1))
-    $('#arrow-icon2').click((e) => this.handleShowTickets(e, bills, 2))
-    $('#arrow-icon3').click((e) => this.handleShowTickets(e, bills, 3))
+    $('#arrow-icon1').click((e) => {
+      this.handleShowTickets(e, bills, 1)
+      this.counterUn ++
+    }
+    )
+    $('#arrow-icon2').click((e) => {
+      this.handleShowTickets(e, bills, 2)
+      this.counterUn ++
+    }
+    )
+    $('#arrow-icon3').click((e) => {
+      this.handleShowTickets(e, bills, 3)
+      this.counterUn ++
+    }
+    )
     new Logout({ localStorage, onNavigate })
   }
 
@@ -87,6 +99,7 @@ export default class {
 
   handleEditTicket(e, bill, bills) {
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0
+    // correction du bug hunt dashboard
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id
     if (this.counter % 2 === 0) {
       bills.forEach(b => {
@@ -131,23 +144,21 @@ export default class {
   }
 
   handleShowTickets(e, bills, index) {
-    if (this.counter === undefined || this.index !== index) this.counter = 0
+    if (this.counterUn === undefined || this.index !== index) this.counterUn = 0
     if (this.index === undefined || this.index !== index) this.index = index
-    if (this.counter % 2 === 0) {
+    if (this.counterUn % 2 === 0) {
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(0deg)'})
+      const filteredBillz = filteredBills(bills, getStatus(this.index))
       $(`#status-bills-container${this.index}`)
-        .html(cards(filteredBills(bills, getStatus(this.index))))
-      this.counter ++
+        .html(cards(filteredBillz))
+      filteredBillz.forEach(bill => {
+        $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, filteredBillz))
+      })
     } else {
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(90deg)'})
       $(`#status-bills-container${this.index}`)
         .html("")
-      this.counter ++
     }
-
-    bills.forEach(bill => {
-      $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
-    })
 
     return bills
 

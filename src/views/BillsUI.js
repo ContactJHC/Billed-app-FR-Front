@@ -24,7 +24,12 @@ const rows = (data) => {
 }
 
 export default ({ data: bills, loading, error }) => {
+  let sortedBills;
   
+  if (bills) {
+    const antiChrono = (a, b) => ((a.date < b.date) ? 1 : -1)
+    sortedBills = bills.sort(antiChrono)
+  }
   const modal = () => (`
     <div class="modal fade" id="modaleFile" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -69,7 +74,7 @@ export default ({ data: bills, loading, error }) => {
               </tr>
           </thead>
           <tbody data-testid="tbody">
-            ${rows(bills)}
+            ${rows(sortedBills)}
           </tbody>
           </table>
         </div>
