@@ -23,9 +23,9 @@ export default class {
   handleClickIconEye = (icon) => {
     const billUrl = icon.getAttribute("data-bill-url")
     const imgWidth = Math.floor($('#modaleFile').width() * 0.5)
-    const modaleu = $('#modaleFile')
-    modaleu.find(".modal-body").html(`<div style='text-align: center;' class="bill-proof-container"><img width=${imgWidth} src=${billUrl} alt="Bill" /></div>`)
-    modaleu.modal('show')
+    //Cette ligne a changé, j'y ai ajouté l'attribut data-testid
+    $('#modaleFile').find(".modal-body").html(`<div style='text-align: center;' class="bill-proof-container" data-testid="justificatif"><img width=${imgWidth} src=${billUrl} alt="Bill" /></div>`)
+    $('#modaleFile').modal('show')
   }
 
   getBills = () => {
