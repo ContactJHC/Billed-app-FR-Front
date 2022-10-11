@@ -46,7 +46,7 @@
 })
     describe("Given I am connected as an employee", () => {
     describe("When I am on NewBill Page", () => {
-    test("Then I can upload a file and submit it", async () => {
+    test.only("Then I stay on the same page because of required datas not found", async () => {
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
@@ -54,14 +54,13 @@
       const root = document.createElement("div")
       root.setAttribute("id", "root")
       document.body.append(root)
-      router()
-      window.onNavigate(ROUTES_PATH.NewBill)
+      
       document.body.innerHTML = NewBillUI();
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname });
       };
-
-      const newBill = new NewBill({
+      
+        const newBill = new NewBill({
         document,
         onNavigate,
         mockStore,
@@ -84,16 +83,45 @@
       formulaire.addEventListener('submit',envoiFormulaire)
       userEvent.click(boutonEnvoyer)
       expect(envoiFormulaire).toHaveBeenCalled()
-      expect(typeDeDepense).not.toBeNull()
-      expect(typeDeDepense).not.toBeUndefined()
-      // const file = screen.getByTestId('file')
-      // const changementFichier = jest.fn(file.handleChangeFile)
-      // file.addEventListener("click", changementFichier)
-      // userEvent.click(file)
-      // expect(changementFichier).toHaveBeenCalled()
-      const file = new File(["hello"], "hello.jpeg", { type: "image/jpeg" })
-      // const champFichier = screen.getByTestId('file')
-      // champFichier.value = file
+      // expect(typeDeDepense).not.toBeNull()
+      // expect(typeDeDepense).not.toBeUndefined()
+      expect(screen.getByTestId('form-new-bill')).not.toBeNull()
+      
+    })
+
+    test.only("Then I can't upload a file that isn't supported", async () => {
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+      window.localStorage.setItem('user', JSON.stringify({
+        type: 'Employee'
+      }))
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.append(root)
+      
+      document.body.innerHTML = NewBillUI();
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+      
+        const newBill = new NewBill({
+        document,
+        onNavigate,
+        mockStore,
+        localStorage: window.localStorage,
+      });
+
+
+
+      // document.body.innerHTML = NewBillUI();
+      // await waitFor(() => screen.getByTestId('file'))
+      //to-do write assertion
+      const formulaire = screen.getByTestId('form-new-bill')
+      expect(formulaire).not.toBeNull()
+      expect(formulaire).not.toBeUndefined()
+      
+      const file = new File(["hello"], "hello.txt", { type: "document/txt" })
+      const champFichier = screen.getByTestId('file')
+
       const inputFile = screen.getByTestId("file");
 
       const handleChangeFile = jest.fn(inputFile.handleChangeFile)
@@ -103,21 +131,8 @@
 
       expect(handleChangeFile).toHaveBeenCalled()
       // vérif que test bien réels ci-dessous
-      // expect(inputFile.files[0].type).toBe("document/pdf")
-      // début du test pour champFichier
-      // const champFichier = screen.getByTestId('file')
-      // champFichier.value = new Blob([""], { type: "image/jpeg" })
-      // champFichier.value["lastModifiedDate"] = "";
-      // champFichier.value["name"] = "";
-      // const fichier = 'justificatif.jpeg'
-      // const fileList = {
-      //   0: fichier,
-      //   1: fichier,
-      //   length: 2,
-      //   item: () => fichier
-      // }
-      // expect(champFichier.value).not.toBeNull()
-      // fin du test pour champFichier
+      expect(inputFile.files[0].type).toBe("document/txt")
+      
       const nomDepense = screen.getByTestId('expense-name')
       nomDepense.value = 'vol Paris Londres'
       const vat = screen.getByTestId('vat')
@@ -130,9 +145,15 @@
       champMontant.value = '95'
       const champTVA = screen.getByTestId('pct')
       champTVA.value = '20'
+      const boutonEnvoyer = screen.getByText('Envoyer')
+      const envoiFormulaire = jest.fn(formulaire.handleSubmit)
+      formulaire.addEventListener('submit',envoiFormulaire)
       userEvent.click(boutonEnvoyer)
-      typeDeDepense = screen.getByText('Type de dépense')
+    
       expect(envoiFormulaire).toHaveBeenCalled()
+      expect(screen.queryByText('Mes notes de frais')).toBeNull()
+      const errorDiv = screen.getByTestId('fileError')
+      expect(errorDiv.classList.contains('hidden')).not.toBeTruthy()
     })
   })
 })

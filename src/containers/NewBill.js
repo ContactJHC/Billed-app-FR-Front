@@ -22,8 +22,6 @@ export default class NewBill {
     // bug hunt bills
     const regexExtensions = /(\.jpg|\.jpeg|\.png)$/i
     if (!regexExtensions.exec(filePath)) {
-        alert('Invalid file type');
-        fileInput.value = '';
         return false;
     }
     // fin de bug hunt bills
@@ -50,7 +48,31 @@ export default class NewBill {
   }
   handleSubmit = e => {
     e.preventDefault()
-    console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
+    const cibleDepense = e.target.querySelector(`input[data-testid="expense-name"]`).value
+    if (cibleDepense === '') {
+      return false
+    }
+    const cibleCommentary = e.target.querySelector(`textarea[data-testid="commentary"]`).value
+    if (cibleCommentary === '') {return false}
+    const champFichier = this.document.querySelector('input[data-testid="file"]')
+    const filePath = champFichier.value
+    const filePathParts = filePath.split(/\\/g)
+    this.fileName = filePathParts[filePathParts.length-1]
+    const extensionsSupportees = ['.jpeg', '.jpg', '.png', '.gif']
+    let isSupportedFile = false
+    extensionsSupportees.forEach((e) => {
+    if (this.fileName.endsWith(e)) {
+      isSupportedFile = true
+    }
+    })
+    const errorDiv = this.document.querySelector('#fileError')
+    if (!isSupportedFile) {
+      errorDiv.classList.remove('hidden')
+      return false
+    } else {
+      errorDiv.classList.add('hidden')
+    }
+    console.log('e.target.querySelector(`textarea[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
     const email = JSON.parse(localStorage.getItem("user")).email
     const bill = {
       email,

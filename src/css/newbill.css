@@ -2,6 +2,14 @@
   width: 100%;
 }
 
+.hidden {
+  display: none;
+}
+
+.error {
+  color: red;
+}
+
 .col-half {
   margin:auto;
   width: 75%;
