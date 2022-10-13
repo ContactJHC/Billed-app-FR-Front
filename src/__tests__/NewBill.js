@@ -44,9 +44,9 @@
     });
   })
 })
-    describe("Given I am connected as an employee", () => {
-    describe("When I am on NewBill Page", () => {
-    test.only("Then I stay on the same page because of required datas not found", async () => {
+describe("Given I am connected as an employee", () => {
+  describe("When I am on NewBill Page", () => {
+    test("Then I stay on the same page because of required datas not found", async () => {
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
@@ -89,7 +89,7 @@
       
     })
 
-    test.only("Then I can't upload a file that isn't supported", async () => {
+    test("Then I can't upload a file that isn't supported", async () => {
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
@@ -154,6 +154,71 @@
       expect(screen.queryByText('Mes notes de frais')).toBeNull()
       const errorDiv = screen.getByTestId('fileError')
       expect(errorDiv.classList.contains('hidden')).not.toBeTruthy()
+    })
+
+    test.only("Then I can upload a file if proper datas are found", async () => {
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+      window.localStorage.setItem('user', JSON.stringify({
+        type: 'Employee'
+      }))
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.append(root)
+      
+      document.body.innerHTML = NewBillUI();
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+      
+        const newBill = new NewBill({
+        document,
+        onNavigate,
+        mockStore,
+        localStorage: window.localStorage,
+      });
+
+
+
+      // document.body.innerHTML = NewBillUI();
+      // await waitFor(() => screen.getByTestId('file'))
+      //to-do write assertion
+      const formulaire = screen.getByTestId('form-new-bill')
+      expect(formulaire).not.toBeNull()
+      expect(formulaire).not.toBeUndefined()
+      
+      const file = new File(["hello"], "hello.jpg", { type: "image/jpeg" })
+
+      const inputFile = screen.getByTestId("file");
+
+      const handleChangeFile = jest.fn(inputFile.handleChangeFile)
+      inputFile.addEventListener("change", handleChangeFile);
+
+      fireEvent.change(inputFile, { target: { files: [file] } });
+
+      expect(handleChangeFile).toHaveBeenCalled()
+      // vérif que test bien réels ci-dessous
+      expect(inputFile.files[0].type).toBe("image/jpeg")
+      
+      const nomDepense = screen.getByTestId('expense-name')
+      nomDepense.value = 'vol Paris Londres'
+      const vat = screen.getByTestId('vat')
+      vat.value = '70'
+      const commentaires = screen.getByTestId('commentary')
+      commentaires.value = 'facture suite à voyage à Londres'
+      const champDate = screen.getByTestId('datepicker')
+      champDate.value = '01/09/2022'
+      const champMontant = screen.getByTestId('amount')
+      champMontant.value = '95'
+      const champTVA = screen.getByTestId('pct')
+      champTVA.value = '20'
+      const boutonEnvoyer = screen.getByText('Envoyer')
+      const envoiFormulaire = jest.fn(formulaire.handleSubmit)
+      formulaire.addEventListener('submit',envoiFormulaire)
+      userEvent.click(boutonEnvoyer)
+    
+      expect(envoiFormulaire).toHaveBeenCalled()
+      
+      expect(screen.queryByText('Mes notes de frais')).not.toBeNull()
     })
   })
 })
