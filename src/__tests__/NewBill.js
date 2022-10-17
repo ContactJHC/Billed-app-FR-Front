@@ -140,7 +140,7 @@ describe("Given I am connected as an employee", () => {
       const commentaires = screen.getByTestId('commentary')
       commentaires.value = 'facture suite à voyage à Londres'
       const champDate = screen.getByTestId('datepicker')
-      champDate.value = '01/09/2022'
+      champDate.value = '2022-01-01'
       const champMontant = screen.getByTestId('amount')
       champMontant.value = '95'
       const champTVA = screen.getByTestId('pct')
@@ -186,7 +186,7 @@ describe("Given I am connected as an employee", () => {
       expect(formulaire).not.toBeNull()
       expect(formulaire).not.toBeUndefined()
       
-      const file = new File(["hello"], "hello.jpg", { type: "image/jpeg" })
+      const file = new File(["hello"], "hello.jpeg", { type: "image/jpeg" })
 
       const inputFile = screen.getByTestId("file");
 
@@ -209,8 +209,8 @@ describe("Given I am connected as an employee", () => {
       champDate.value = '01/09/2022'
       const champMontant = screen.getByTestId('amount')
       champMontant.value = '95'
-      const champTVA = screen.getByTestId('pct')
-      champTVA.value = '20'
+      const champPCT = screen.getByTestId('pct')
+      champPCT.value = '20'
       const boutonEnvoyer = screen.getByText('Envoyer')
       const envoiFormulaire = jest.fn(formulaire.handleSubmit)
       formulaire.addEventListener('submit',envoiFormulaire)

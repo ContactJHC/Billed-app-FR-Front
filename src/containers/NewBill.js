@@ -52,34 +52,53 @@ export default class NewBill {
     if (cibleDepense === '') {
       return false
     }
-    // const cibleCommentary = e.target.querySelector(`textarea[data-testid="commentary"]`).value
-    // if (cibleCommentary === '') {
-    //   return false
-    // }
+    const cibleVat = e.target.querySelector('input[data-testid="vat"]').value
+    if (cibleVat === '') {
+      return false
+    }
+    const cibleCommentary = e.target.querySelector(`textarea[data-testid="commentary"]`).value
+    if (cibleCommentary === '') {
+      return false
+    }
+    const cibleDate = e.target.querySelector('input[data-testid="datepicker"]').value
+    if (cibleDate === '') {
+      return false
+    }
+    const cibleAmount = e.target.querySelector('input[data-testid="amount"]').value
+    if (cibleAmount === '') {
+      return false
+    }
+    const ciblePCT = e.target.querySelector('input[data-testid="pct"]').value
+    if (ciblePCT === '') {
+      return false
+    }
     const champFichier = this.document.querySelector('input[data-testid="file"]')
     const filePath = champFichier.value
     const filePathParts = filePath.split(/\\/g)
     this.fileName = filePathParts[filePathParts.length-1]
-    // const extensionsSupportees = ['.jpeg', '.jpg', '.png', '.gif']
-    // let isSupportedFile = false
-    // extensionsSupportees.forEach((e) => {
-    // if (this.fileName.endsWith(e)) {
-    //   isSupportedFile = true
-    // }
-    // })
-    // const errorDiv = this.document.querySelector('#fileError')
-    // if (!isSupportedFile) {
-    //   errorDiv.classList.remove('hidden')
-    //   return false
-    // } else {
-    //   errorDiv.classList.add('hidden')
-    // }
-    console.log('e.target.querySelector(`textarea[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
+    const extensionsSupportees = ['.jpeg', '.jpg', '.png', '.gif']
+    let isSupportedFile = false
+    extensionsSupportees.forEach((e) => {
+    if (this.fileName.endsWith(e)) {
+      isSupportedFile = true
+    }
+    })
+    const errorDiv = this.document.querySelector('#fileError')
+    if (!isSupportedFile) {
+      errorDiv.classList.remove('hidden')
+      return false
+    } else {
+      errorDiv.classList.add('hidden')
+    }
+    console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
+    console.log('e.target.querySelector(`select[data-testid="expense-type"]`).value', e.target.querySelector(`select[data-testid="expense-type"]`).value)
+    console.log('e.target.querySelector(`input[data-testid="expense-name"]`).value', e.target.querySelector(`input[data-testid="expense-name"]`).value)
+    console.log('e.target.querySelector(`input[data-testid="amount"]`).value', e.target.querySelector(`input[data-testid="amount"]`).value)
+    console.log('e.target.querySelector(`input[data-testid="vat"]`).value', e.target.querySelector(`input[data-testid="vat"]`).value)
+    console.log('e.target.querySelector(`input[data-testid="pct"]`).value', e.target.querySelector(`input[data-testid="pct"]`).value)
+    console.log('e.target.querySelector(`textarea[data-testid="commentary"]`).value', e.target.querySelector(`textarea[data-testid="commentary"]`).value)
     const email = JSON.parse(localStorage.getItem("user")).email
-    // const cibleEmail = email.value
-    // if (cibleEmail === '') {
-    //   return false
-    // }
+    
     const bill = {
       email,
       type: e.target.querySelector(`select[data-testid="expense-type"]`).value,
@@ -93,21 +112,7 @@ export default class NewBill {
       fileName: this.fileName,
       status: 'pending'
     }
-    if (bill.name ='') {
-      return false
-    }
-    if (bill.amount ='') {
-      return false
-    }
-    if (bill.date = '') {
-      return false
-    }
-    if (bill.vat = '') {
-      return false
-    }
-    if (bill.pct ='') {
-      return false
-    }
+    
     this.updateBill(bill)
     this.onNavigate(ROUTES_PATH['Bills'])
   }
