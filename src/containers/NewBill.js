@@ -17,18 +17,35 @@ export default class NewBill {
   }
   handleChangeFile = e => {
     e.preventDefault()
-    const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
-    const filePath = e.target.value.split(/\\/g)
-    // bug hunt bills
-    const regexExtensions = /(\.jpg|\.jpeg|\.png)$/i
-    if (!regexExtensions.exec(filePath)) {
-        return false;
+    
+    // rajout de handleSubmit
+    const champFichier = this.document.querySelector('input[data-testid="file"]')
+    const filePath = champFichier.files[0]
+    // const filePathParts = filePath.split(/\\/g)
+    // this.fileName = filePathParts[filePathParts.length-1]
+    this.fileName = filePath.name
+    const extensionsSupportees = ['.jpeg', '.jpg', '.png', '.gif']
+    let isSupportedFile = false
+    extensionsSupportees.forEach((e) => {
+    if (this.fileName.endsWith(e)) {
+      isSupportedFile = true
     }
+    })
+    const errorDiv = this.document.querySelector('#fileError')
+    if (!isSupportedFile) {
+      errorDiv.classList.remove('hidden')
+      return false
+    } else {
+      errorDiv.classList.add('hidden')
+    }
+    // fin de rajout
+
+
+    
     // fin de bug hunt bills
-    const fileName = filePath[filePath.length-1]
     const formData = new FormData()
     const email = JSON.parse(localStorage.getItem("user")).email
-    formData.append('file', file)
+    formData.append('file', filePath)
     formData.append('email', email)
 
     this.store
@@ -43,7 +60,6 @@ export default class NewBill {
         console.log(fileUrl)
         this.billId = key
         this.fileUrl = fileUrl
-        this.fileName = fileName
       }).catch(error => console.error(error))
   }
   handleSubmit = e => {
@@ -60,7 +76,11 @@ export default class NewBill {
     if (cibleCommentary === '') {
       return false
     }
-    const cibleDate = e.target.querySelector('input[data-testid="datepicker"]').value
+
+    const elementDate = e.target.querySelector('input[data-testid="datepicker"]')
+    const cibleDate = elementDate.value
+    console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
+
     if (cibleDate === '') {
       return false
     }
@@ -73,9 +93,10 @@ export default class NewBill {
       return false
     }
     const champFichier = this.document.querySelector('input[data-testid="file"]')
-    const filePath = champFichier.value
-    const filePathParts = filePath.split(/\\/g)
-    this.fileName = filePathParts[filePathParts.length-1]
+    const filePath = champFichier.files[0]
+    // const filePathParts = filePath.split(/\\/g)
+    // this.fileName = filePathParts[filePathParts.length-1]
+    this.fileName = filePath.name
     const extensionsSupportees = ['.jpeg', '.jpg', '.png', '.gif']
     let isSupportedFile = false
     extensionsSupportees.forEach((e) => {

@@ -120,8 +120,7 @@ describe("Given I am connected as an employee", () => {
       expect(formulaire).not.toBeUndefined()
       
       const file = new File(["hello"], "hello.txt", { type: "document/txt" })
-      const champFichier = screen.getByTestId('file')
-
+      
       const inputFile = screen.getByTestId("file");
 
       const handleChangeFile = jest.fn(inputFile.handleChangeFile)
@@ -156,7 +155,7 @@ describe("Given I am connected as an employee", () => {
       expect(errorDiv.classList.contains('hidden')).not.toBeTruthy()
     })
 
-    test.only("Then I can upload a file if proper datas are found", async () => {
+    test("Then I can upload a file if proper datas are found", async () => {
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
@@ -173,7 +172,7 @@ describe("Given I am connected as an employee", () => {
         const newBill = new NewBill({
         document,
         onNavigate,
-        mockStore,
+        store : mockStore,
         localStorage: window.localStorage,
       });
 
@@ -186,17 +185,15 @@ describe("Given I am connected as an employee", () => {
       expect(formulaire).not.toBeNull()
       expect(formulaire).not.toBeUndefined()
       
+      // saisie du fichier 
       const file = new File(["hello"], "hello.jpeg", { type: "image/jpeg" })
-
       const inputFile = screen.getByTestId("file");
-
       const handleChangeFile = jest.fn(inputFile.handleChangeFile)
       inputFile.addEventListener("change", handleChangeFile);
-
       fireEvent.change(inputFile, { target: { files: [file] } });
 
       expect(handleChangeFile).toHaveBeenCalled()
-      // vérif que test bien réels ci-dessous
+      // vérif que test bien réel ci-dessous
       expect(inputFile.files[0].type).toBe("image/jpeg")
       
       const nomDepense = screen.getByTestId('expense-name')
@@ -205,8 +202,11 @@ describe("Given I am connected as an employee", () => {
       vat.value = '70'
       const commentaires = screen.getByTestId('commentary')
       commentaires.value = 'facture suite à voyage à Londres'
+
+      // saisie date
       const champDate = screen.getByTestId('datepicker')
-      champDate.value = '01/09/2022'
+      fireEvent.change(champDate, {target : { value: '2022-09-01'}})
+
       const champMontant = screen.getByTestId('amount')
       champMontant.value = '95'
       const champPCT = screen.getByTestId('pct')
